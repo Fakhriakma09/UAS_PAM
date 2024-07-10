@@ -29,7 +29,8 @@ class SearchPage extends StatelessWidget {
             return ListView.builder(
               itemCount: results.length,
               itemBuilder: (context, index) {
-                return ListTile(
+                return Card(
+                  child: ListTile(
                   title: Text(results[index].dos),
                   subtitle: Text(results[index].listactivity),
                   trailing: Icon(
@@ -39,6 +40,7 @@ class SearchPage extends StatelessWidget {
                   onTap: () {
                     // Handle item tap if needed
                   },
+                ),
                 );
               },
             );
