@@ -31,11 +31,11 @@ class SearchPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                  title: Text(results[index].dos),
-                  subtitle: Container(child: Row(
+                  title: Text('Do: ${results[index].dos}'),
+                  subtitle: Container(child: Column(
                     children: [
-                      Text(results[index].listactivity),
-                      Text(results[index].todo)
+                      Text('List: ${results[index].listactivity}'),
+                      Text('ToDo: ${results[index].todo}')
                     ],
                   )),
                   trailing: Icon(
