@@ -32,7 +32,12 @@ class SearchPage extends StatelessWidget {
                 return Card(
                   child: ListTile(
                   title: Text(results[index].dos),
-                  subtitle: Text(results[index].listactivity),
+                  subtitle: Container(child: Row(
+                    children: [
+                      Text(results[index].listactivity),
+                      Text(results[index].todo)
+                    ],
+                  )),
                   trailing: Icon(
                     results[index].status ? Icons.check_circle : Icons.cancel,
                     color: results[index].status ? Colors.green : Colors.red,
