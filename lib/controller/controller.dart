@@ -84,4 +84,19 @@ class PostApiServicesDio {
       throw Exception('Failed to update data: $e');
     }
   }
+
+  Future<List<PostData>> getPostDatas(String query) async {
+    try {
+      final response = await _dio.get('/beranda');
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        List<PostData> allPosts = data.map((json) => PostData.fromJson(json)).toList();
+        return allPosts.where((post) => post.dos.contains(query)).toList();
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load data: $e');
+    }
+  }
 }

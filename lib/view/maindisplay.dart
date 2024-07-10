@@ -1,10 +1,46 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_8/view/detaillist.dart';
 import 'package:flutter_application_8/view/tambahdata.dart';
 import 'package:flutter_application_8/model/model.dart';
 import 'package:flutter_application_8/controller/controller.dart';
 import 'package:flutter_application_8/view/update.dart';
+import 'package:flutter_application_8/view/search.dart';
+
+class CustomSearchDelegate extends SearchDelegate {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return SearchPage(query: query);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Center(
+      child: Text('Type something to search'),
+    );
+  }
+}
 
 class MainDisplayPageApi extends StatefulWidget {
   const MainDisplayPageApi({Key? key}) : super(key: key);
@@ -53,9 +89,11 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
     }
   }
 
-  void _updatePost(String id, String dos, String listactivity, String toDo) async {
+  void _updatePost(
+      String id, String dos, String listactivity, String toDo) async {
     try {
-      String response = await postApiServicesDio.UpdateRequestPost(dos, listactivity, toDo, id);
+      String response = await postApiServicesDio.UpdateRequestPost(
+          dos, listactivity, toDo, id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response)),
       );
@@ -99,7 +137,8 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
 
   void _toggleCompleted(String id, bool currentStatus) async {
     try {
-      String response = await postApiServicesDio.toggleCompleted(id, currentStatus);
+      String response =
+          await postApiServicesDio.toggleCompleted(id, currentStatus);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response)),
       );
@@ -159,7 +198,14 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
               'lib/assets/Gambar/tolist.png',
               height: 50,
               width: 50,
-            )
+            ),
+            SizedBox(width: 7),
+            ElevatedButton(
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearchDelegate());
+              },
+              child: Text('Search'),
+            ),
           ],
         ),
         backgroundColor: Colors.white,
@@ -185,7 +231,8 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                           Image.network(
                             'https://vectorified.com/images/no-data-icon-10.png',
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.error, size: 50, color: Colors.red),
+                                const Icon(Icons.error,
+                                    size: 50, color: Colors.red),
                           ),
                           const SizedBox(height: 20),
                           Text('Error: ${snapshot.error}'),
@@ -193,13 +240,15 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                       ),
                     );
                   } else if (snapshot.hasData) {
-                    List<PostData> snapshotData = snapshot.data as List<PostData>;
+                    List<PostData> snapshotData =
+                        snapshot.data as List<PostData>;
 
                     return ListView.builder(
                       itemCount: snapshotData.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: () => _navigateToDetailPage(snapshotData[index]),
+                          onTap: () =>
+                              _navigateToDetailPage(snapshotData[index]),
                           child: Card(
                             elevation: 4.0,
                             shape: RoundedRectangleBorder(
@@ -208,7 +257,8 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                             child: Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage('lib/assets/Gambar/imag.jpg'),
+                                  image:
+                                      AssetImage('lib/assets/Gambar/imag.jpg'),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -216,25 +266,28 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                                 leading: Checkbox(
                                   value: snapshotData[index].status,
                                   onChanged: (bool? value) {
-                                    _toggleCompleted(snapshotData[index].id, snapshotData[index].status);
+                                    _toggleCompleted(snapshotData[index].id,
+                                        snapshotData[index].status);
                                   },
                                 ),
                                 subtitle: Container(
-                                  margin: const EdgeInsets.only(bottom: 50.0,left: 4),
+                                  margin: const EdgeInsets.only(
+                                      bottom: 50.0, left: 4),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
                                         child: Text(
                                           'Do: ${snapshotData[index].dos}',
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold,
-                                            backgroundColor: Colors.black.withOpacity(0.8),
-                                            fontSize: 12
-                                          ),
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                              backgroundColor:
+                                                  Colors.black.withOpacity(0.8),
+                                              fontSize: 12),
                                           maxLines: 2,
                                           textAlign: TextAlign.left,
                                         ),
@@ -246,18 +299,20 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                                   child: Container(
                                     padding: EdgeInsets.all(4.0),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(
                                           child: Text(
                                             'ListActivity: ${snapshotData[index].listactivity}',
                                             style: TextStyle(
-                                              color: Colors.orange,
-                                              fontWeight: FontWeight.bold,
-                                              backgroundColor: Colors.black.withOpacity(0.8),
-                                              fontSize: 12
-                                            ),
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.bold,
+                                                backgroundColor: Colors.black
+                                                    .withOpacity(0.8),
+                                                fontSize: 12),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
@@ -267,11 +322,11 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                                           child: Text(
                                             'ToDo: ${snapshotData[index].todo}',
                                             style: TextStyle(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold,
-                                              backgroundColor: Colors.black.withOpacity(0.8),
-                                              fontSize: 12
-                                            ),
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.bold,
+                                                backgroundColor: Colors.black
+                                                    .withOpacity(0.8),
+                                                fontSize: 12),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
@@ -282,7 +337,6 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                                   ),
                                 ),
                                 trailing: Row(
-                                  
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Container(
@@ -290,20 +344,23 @@ class _MainDisplayPageApiState extends State<MainDisplayPageApi> {
                                       width: 38,
                                       height: 38,
                                       child: IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      color: Colors.blueAccent,
-                                      onPressed: () => _navigateUpdatePage(snapshotData[index]),
-                                    ),
+                                        icon: const Icon(Icons.edit),
+                                        color: Colors.blueAccent,
+                                        onPressed: () => _navigateUpdatePage(
+                                            snapshotData[index]),
+                                      ),
                                     ),
                                     Container(
                                       color: Colors.redAccent.withOpacity(0.8),
                                       width: 38,
                                       height: 38,
                                       child: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      color: Color.fromARGB(255, 108, 104, 104),
-                                      onPressed: () => _deletePost(snapshotData[index].id),
-                                    ),
+                                        icon: const Icon(Icons.delete),
+                                        color:
+                                            Color.fromARGB(255, 108, 104, 104),
+                                        onPressed: () =>
+                                            _deletePost(snapshotData[index].id),
+                                      ),
                                     )
                                   ],
                                 ),
